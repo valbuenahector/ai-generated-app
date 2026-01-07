@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found{% endblock %}
+
+{% block content %}
+    <h1>Error 404: The Vibe is Lost</h1>
+    <p>Sorry, we couldn't find the page you were looking for.</p>
+    
+    <div style="background: #eee; padding: 1rem; border-left: 5px solid #d9534f; margin-top: 2rem;">
+        <h3>Technical Details (Lab Only):</h3>
+        <p>Exception: {{ error }}</p>
+        <p>Path: {{ request.path }}</p>
+    </div>
+
+    <p style="margin-top: 2rem;"><a href="{{ url_for('home') }}">Return Home</a></p>
+{% endblock %}

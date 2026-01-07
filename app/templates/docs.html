@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Docs - F5 AI Generated Application{% endblock %}
+
+{% block content %}
+<!-- HEADER SECTION -->
+<section class="bg-f5black text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-extrabold mb-4 text-white">Educational Resources</h1>
+        <p class="text-xl text-f5gray-400">Deep dive into Vibe Coding benefits, risks, and industry analysis.</p>
+    </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            
+            <!-- Benefits -->
+            <div class="space-y-6">
+                <div class="bg-f5gray-100 p-8 rounded-xl h-full border-b-4 border-green-500">
+                    <h2 class="text-2xl font-bold text-f5black mb-6 flex items-center">
+                        <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                        Benefits
+                    </h2>
+                    <ul class="space-y-4 text-f5gray-600">
+                        <li class="pb-4 border-b border-f5gray-200">
+                            <strong class="text-f5black block mb-1">Speed of Prototyping</strong>
+                            Accelerates the journey from idea to working prototype in hours rather than weeks.
+                        </li>
+                        <li class="pb-4 border-b border-f5gray-200">
+                            <strong class="text-f5black block mb-1">Lower Barrier to Entry</strong>
+                            Allows domain experts with little coding experience to translate ideas into software.
+                        </li>
+                        <li>
+                            <strong class="text-f5black block mb-1">Creative Flow</strong>
+                            Offloads rote syntax tasks, allowing developers to focus on higher-level architecture.
+                        </li>
+                    </ul>
+                    <p class="mt-8 text-xs text-f5gray-400 uppercase tracking-widest font-bold">Source: blog.replit.com</p>
+                </div>
+            </div>
+
+            <!-- Risks -->
+            <div class="space-y-6">
+                <div class="bg-f5gray-100 p-8 rounded-xl h-full border-b-4 border-f5red">
+                    <h2 class="text-2xl font-bold text-f5black mb-6 flex items-center">
+                        <svg class="w-6 h-6 text-f5red mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                        Risks
+                    </h2>
+                    <ul class="space-y-4 text-f5gray-600">
+                        <li class="pb-4 border-b border-f5gray-200">
+                            <strong class="text-f5black block mb-1">Brittle Code</strong>
+                            AI-generated logic often lacks the coherent structure required for long-term maintenance.
+                        </li>
+                        <li class="pb-4 border-b border-f5gray-200">
+                            <strong class="text-f5black block mb-1">Debugging Complexity</strong>
+                            Diagnosing issues in logic you didn't write requires specialized "AI archaeology" skills.
+                        </li>
+                        <li>
+                            <strong class="text-f5black block mb-1">Security Vulnerabilities</strong>
+                            Unchecked AI output often omits critical validation, sanitization, and security headers.
+                        </li>
+                    </ul>
+                    <p class="mt-8 text-xs text-f5gray-400 uppercase tracking-widest font-bold">Source: stackoverflow.blog</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

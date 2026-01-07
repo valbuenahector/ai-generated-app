@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Home - F5 AI Generated Application{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="bg-f5black text-white py-20 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight text-white">
+                    F5 AI Generated <br><span class="text-f5red">Application</span>
+                </h1>
+                <p class="text-xl text-f5gray-300 mb-8 leading-relaxed">
+                    Exploring the intersection of rapid AI-assisted development and enterprise-grade security. A product of "vibe coding" designed for AppWorld 2026.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#what-is-vibe-coding" class="bg-f5red hover:bg-white hover:text-f5red text-white px-8 py-3 rounded font-bold transition-all transform hover:scale-105">Explore Vibe Coding</a>
+                    <a href="{{ url_for('docs') }}" class="border border-f5gray-500 hover:border-white px-8 py-3 rounded font-bold transition-all">Read Documentation</a>
+                </div>
+            </div>
+            <div class="hidden lg:block relative">
+                <!-- F5 Tech Visual (Gemini Generated) -->
+                <div class="w-full h-96 bg-f5gray-800 rounded-lg flex items-center justify-center border border-f5gray-700 relative overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/Gemini_Generated_Image_auf2bfauf2bfauf2.png') }}" alt="AI Generated Hero Visual" class="w-full h-full object-cover object-top relative z-10">
+                    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                </div>
+                <!-- Decorative elements -->
+                <div class="absolute -top-4 -right-4 w-24 h-24 bg-f5red opacity-10 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-f5red opacity-10 rounded-full blur-3xl"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHAT IS VIBE CODING -->
+<section id="what-is-vibe-coding" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-f5black mb-4">What is Vibe Coding?</h2>
+            <div class="w-20 h-1 bg-f5red mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div class="prose prose-lg text-f5gray-600 max-w-none">
+                <p>
+                    Vibe coding is an emerging AI-assisted software development technique where a programmer builds applications by conversing with an AI rather than writing code manually. The term was popularized by computer scientist <span class="text-f5black font-semibold">Andrej Karpathy</span> in early 2025.
+                </p>
+                <p>
+                    In practice, it means describing what you want in natural language and letting the AI generate and iteratively refine the source code, with minimal human intervention in the code itself.
+                </p>
+                <blockquote class="border-l-4 border-f5red pl-4 italic text-f5gray-800 bg-f5gray-100 py-4 pr-4 rounded-r">
+                    "I just see stuff, say stuff, run stuff, and copy paste stuff, and it mostly works."
+                    <footer class="text-sm font-bold mt-2">— Andrej Karpathy</footer>
+                </blockquote>
+            </div>
+            <div class="bg-f5gray-100 p-8 rounded-lg border border-f5gray-200">
+                <h3 class="text-xl font-bold mb-6 text-f5black flex items-center">
+                    <svg class="w-6 h-6 text-f5red mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                    Key Characteristics
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="bg-f5red text-white p-1 rounded-full mr-3 mt-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg></span>
+                        <span><strong class="text-f5black">Natural Language Interface:</strong> English is the new programming language.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-f5red text-white p-1 rounded-full mr-3 mt-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg></span>
+                        <span><strong class="text-f5black">Rapid Iteration:</strong> Focus on "vibes" and immediate functional results.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-f5red text-white p-1 rounded-full mr-3 mt-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg></span>
+                        <span><strong class="text-f5black">Minimal Manual Syntax:</strong> LLMs handle the boilerplate and logic implementation.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-f5red text-white p-1 rounded-full mr-3 mt-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg></span>
+                        <span><strong class="text-f5black">Accessibility:</strong> Lowers the barrier for non-programmers to build software.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HISTORY SECTION -->
+<section class="py-20 bg-f5gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-f5black mb-4">History of Vibe Coding</h2>
+            <div class="w-20 h-1 bg-f5red mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Era 1 -->
+            <div class="bg-white p-8 rounded-lg shadow-sm border-t-4 border-f5black">
+                <div class="text-f5red font-bold text-xl mb-4">Early 2024</div>
+                <h3 class="text-lg font-bold mb-3">The Prototyping Phase</h3>
+                <p class="text-f5gray-600 text-sm leading-relaxed">
+                    AI-assisted coding began with simple code completions. Developers used models to write boilerplate functions, but the "mental model" remained manual.
+                </p>
+            </div>
+            <!-- Era 2 -->
+            <div class="bg-white p-8 rounded-lg shadow-sm border-t-4 border-f5red transform md:-translate-y-4">
+                <div class="text-f5red font-bold text-xl mb-4">Feb 2025</div>
+                <h3 class="text-lg font-bold mb-3">The "Karpathy" Moment</h3>
+                <p class="text-f5gray-600 text-sm leading-relaxed">
+                    Andrej Karpathy's viral post coined the term "Vibe Coding." Tools like Cursor and Replit Agent accelerated the ability to build entire apps by "vibe" alone.
+                </p>
+            </div>
+            <!-- Era 3 -->
+            <div class="bg-white p-8 rounded-lg shadow-sm border-t-4 border-f5black">
+                <div class="text-f5red font-bold text-xl mb-4">2026 & Beyond</div>
+                <h3 class="text-lg font-bold mb-3">Mainstream Adoption</h3>
+                <p class="text-f5gray-600 text-sm leading-relaxed">
+                    By 2026, Vibe Coding entered enterprise discussions. The focus shifted from "can we build it?" to "can we secure it?" as LLM code reached 50%+ of all new repositories.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPARISON SECTION -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-f5black mb-4">AI-Assisted vs. Vibe Coding</h2>
+            <p class="text-f5gray-500">Understanding the shift in methodology</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-f5gray-200 rounded-xl overflow-hidden shadow-xl">
+            <!-- AI-Assisted -->
+            <div class="p-10 border-b md:border-b-0 md:border-r border-f5gray-200">
+                <h3 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="w-8 h-8 bg-f5gray-200 rounded-full flex items-center justify-center text-sm mr-3">01</span>
+                    AI-Assisted Coding
+                </h3>
+                <ul class="space-y-4 text-f5gray-600">
+                    <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> Human writes the core logic</li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> AI provides "autocompletion"</li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> High level of syntax knowledge required</li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> Slower but predictable control</li>
+                </ul>
+                <div class="mt-8 pt-8 border-t border-f5gray-100 text-center">
+                    <div class="text-4xl font-black text-f5black">20%</div>
+                    <div class="text-xs uppercase tracking-widest text-f5gray-400 mt-2">Historical AI Code Contribution</div>
+                </div>
+            </div>
+            <!-- Vibe Coding -->
+            <div class="p-10 bg-f5gray-50">
+                <h3 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="w-8 h-8 bg-f5red rounded-full flex items-center justify-center text-sm text-white mr-3">02</span>
+                    Vibe Coding
+                </h3>
+                <ul class="space-y-4 text-f5gray-600">
+                    <li class="flex items-start"><svg class="w-5 h-5 text-f5red mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> AI writes the core logic</li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-f5red mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> Human provides high-level "vibes"</li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-f5red mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> Minimal syntax knowledge required</li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-f5red mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> Extremely fast development cycles</li>
+                </ul>
+                <div class="mt-8 pt-8 border-t border-f5gray-100 text-center">
+                    <div class="text-4xl font-black text-f5red">50%+</div>
+                    <div class="text-xs uppercase tracking-widest text-f5gray-400 mt-2">New Code Generated by LLMs in 2026</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECURITY MATTERS SECTION -->
+<section class="py-20 bg-f5black text-white relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <div class="inline-block px-3 py-1 bg-f5red text-xs font-bold uppercase tracking-widest mb-4">Security Critical</div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Why Security Matters for AI-Generated Apps</h2>
+                <p class="text-f5gray-400 mb-8 leading-relaxed">
+                    AI speed is a double-edged sword. While it accelerates innovation, it often prioritizes "functional vibes" over security best practices. AI-generated code frequently misses input validation, hardcodes secrets, or introduces architectural technical debt.
+                </p>
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="bg-f5gray-800 p-2 rounded mr-4">
+                            <svg class="w-6 h-6 text-f5red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Input Validation</h4>
+                            <p class="text-sm text-f5gray-500">LLMs may skip sanitization, leading to SQLi or XSS risks.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="bg-f5gray-800 p-2 rounded mr-4">
+                            <svg class="w-6 h-6 text-f5red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Secret Leakage</h4>
+                            <p class="text-sm text-f5gray-500">Prompts often include API keys that get baked into the source code.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-10 p-6 border border-f5gray-800 bg-f5gray-900 rounded-lg">
+                    <p class="text-sm italic text-f5gray-300">
+                        "F5 Application Delivery and Security Platform provides the guardrails needed to move fast without breaking things, ensuring AI-generated applications meet enterprise security standards."
+                    </p>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="aspect-square bg-gradient-to-br from-f5red to-f5black rounded-2xl p-8 flex flex-col justify-end overflow-hidden">
+                    <!-- F5 Photography -->
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80')] opacity-30 rounded-2xl grayscale"></div>
+                    <div class="relative z-10">
+                        <div class="text-5xl font-black mb-2 tracking-tighter">SECURE.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-f5black mb-4">Frequently Asked Questions</h2>
+            <div class="w-20 h-1 bg-f5red mx-auto"></div>
+        </div>
+        <div class="space-y-4">
+            <!-- FAQ 1 -->
+            <details class="group bg-f5gray-50 rounded-lg p-6 border border-f5gray-100 transition-all">
+                <summary class="flex justify-between items-center font-bold cursor-pointer list-none">
+                    <span>What is vibe coding?</span>
+                    <span class="transition group-open:rotate-180"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span>
+                </summary>
+                <p class="mt-4 text-f5gray-600 leading-relaxed">Vibe coding is building apps by talking to AI agents. You describe the functionality, and the AI handles the code generation, allowing you to focus on the "vibe" or user experience rather than syntax.</p>
+            </details>
+            <!-- FAQ 2 -->
+            <details class="group bg-f5gray-50 rounded-lg p-6 border border-f5gray-100 transition-all">
+                <summary class="flex justify-between items-center font-bold cursor-pointer list-none">
+                    <span>Is vibe coding secure?</span>
+                    <span class="transition group-open:rotate-180"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span>
+                </summary>
+                <p class="mt-4 text-f5gray-600 leading-relaxed">Inherently, no. AI-generated code carries the same risks as any code written without security reviews. However, by using security-focused prompts and external guardrails like F5, it can be made production-ready.</p>
+            </details>
+            <!-- FAQ 3 -->
+            <details class="group bg-f5gray-50 rounded-lg p-6 border border-f5gray-100 transition-all">
+                <summary class="flex justify-between items-center font-bold cursor-pointer list-none">
+                    <span>How is this app generated?</span>
+                    <span class="transition group-open:rotate-180"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span>
+                </summary>
+                <p class="mt-4 text-f5gray-600 leading-relaxed">This application was scaffolded using AI coding agents (like Cline) and refined through iterative prompting, demonstrating the exact "vibe coding" methodology it discusses.</p>
+            </details>
+            <!-- FAQ 4 -->
+            <details class="group bg-f5gray-50 rounded-lg p-6 border border-f5gray-100 transition-all">
+                <summary class="flex justify-between items-center font-bold cursor-pointer list-none">
+                    <span>Why does F5 care about AI-generated apps?</span>
+                    <span class="transition group-open:rotate-180"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span>
+                </summary>
+                <p class="mt-4 text-f5gray-600 leading-relaxed">As the volume of AI-generated code grows, the potential for non-standard security vulnerabilities increases. F5 ensures that these applications remain secure, available, and performant regardless of how they were built.</p>
+            </details>
+            <!-- FAQ 5 -->
+            <details class="group bg-f5gray-50 rounded-lg p-6 border border-f5gray-100 transition-all">
+                <summary class="flex justify-between items-center font-bold cursor-pointer list-none">
+                    <span>What are SAST and DAST tools?</span>
+                    <span class="transition group-open:rotate-180"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span>
+                </summary>
+                <div class="mt-4 text-f5gray-600 leading-relaxed space-y-2">
+                    <p><strong>SAST (Static Application Security Testing):</strong> Analyzes source code for vulnerabilities without running the app. Great for catching hardcoded keys or bad logic.</p>
+                    <p><strong>DAST (Dynamic Application Security Testing):</strong> Tests the running application from the outside, like a hacker would. Great for catching injection risks or configuration errors.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- CITATION SECTION -->
+<section class="py-12 bg-f5gray-50 border-t border-f5gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-xs text-f5gray-500 text-center">
+        <p class="mb-2 uppercase tracking-widest font-bold">Sources & Citations</p>
+        <p>Wikipedia: Vibe coding (2025) | Andrej Karpathy: Viral Post (Feb 2025) | F5 Brand Guidelines (2025) | AI-generated synthesis (no direct quote for FAQ logic).</p>
+        <p class="mt-4 italic">Note: Some images are placeholders or referenced via Unsplash for educational purposes.</p>
+    </div>
+</section>
+{% endblock %}

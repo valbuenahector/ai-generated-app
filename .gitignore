@@ -1,0 +1,6 @@
+ai-generated-app/
+__pycache__/
+.pytest_cache/
+.env
+.DS_Store
+.clinerules

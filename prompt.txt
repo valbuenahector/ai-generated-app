@@ -1,0 +1,404 @@
+==========================
+Inital Prompt for AI Generated App
+==========================
+
+I am going to vibe code the web application for module 2. Th plan is to have the code pre-seed as per project instructions
+
+I need to a formal prompt to start the vibe coding project.
+
+***PROMPT OUTPUT FORMAT IN CODE TEXT BOX*** 
+
+CONTENT REQUIREMENTS
+1.- The content will be based on attached Vibe Coding document.
+2.- Reference all content in the web application to its source.
+
+TECHNOLOGY REQUIREMENTS
+1.- Student will commit the web application to Gitlab CE where CI/CD pipeline (file gitlab-ci) and create a docker image
+2.- The web application should a modern looking app but without overcomplicating the containerization of the web applicaiton
+3.- Use both server (python preferable) and client side Technologies to make to create a modern app but again do not overcomplicate the containerization
+4.- I do plan to host a separate instnace if the app outside of of the training and pre-scanned with F5XC Web application Scan (Module 4 in lab) to scan for security issues. So there should some harmless but basic security flaws to prove the lab point
+5.- In Module 3 in the lab, the students will vibe code API endpoints, a login page and a HTMl form. So please focus the prompt on the "base" code that serve as the starting point for module 2. I will also use .clinerules to ground module 3 vibe coding
+6.- Add any other that applies
+
+WROKFLOW REQUIREMENTS
+1.- Include workflow files:
+  - README.md - Disclose the web application is the produc of vibe codding. use ASIS
+  - prd.md: problem, personas, non-goals, user stories, MVP scope, success metrics, constraints.
+  - todo.md: immediate tasks/backlog + any unknowns with direct doc links.
+  - CHANGELOG.md.
+2.- Include unit test and verification to the application:
+3.- Add any other that applies
+
+==========================
+Formal Prompt
+==========================
+
+
+SYSTEM / ROLE
+You are an AI software engineer operating under the “AppWorld 2026 – Code. Secure. Repeat.” lab constraints.
+Your task is to VIBE CODE (AI-assisted, iterative, non-deterministic by design) a **base web application** that will be pre-seeded for **Module 2** of the lab.
+This application is intentionally imperfect and exists solely for **educational and security demonstration purposes**.
+
+You MUST follow all instructions below exactly.
+
+====================================================================
+CONTEXT & INTENT
+====================================================================
+- This application is the result of **vibe coding**, not traditional SDLC.
+- It is a **starting point**, not a final product.
+- Students will:
+  - Commit this code to GitLab CE
+  - Trigger a CI/CD pipeline (docs/gitlab-ci.yml)
+  - Build a Docker image
+  - Deploy it to F5 Distributed Cloud vK8s
+  - Secure it progressively in Modules 2–4
+
+This app MUST clearly demonstrate:
+- The speed and appeal of vibe coding
+- The architectural and security tradeoffs it introduces
+- Why “Code. Secure. Repeat.” is necessary
+
+All content in the application (UI text, documentation, comments) MUST:
+- Reference its **original source** (article, blog, paper, framework, or doc)
+- Explicitly state when content was AI-generated or summarized
+- Use file docs/Vibe-coding.txt for web application contentand sources
+
+====================================================================
+SOURCE MATERIAL REQUIREMENTS
+====================================================================
+- Base the concepts, language, and framing on the attached **Vibe Coding document**
+- Use file docs/Vibe-coding.txt for web application contentand sources
+- Cite sources inline using comments or markdown links:
+  - Blog posts
+  - Research papers
+  - Framework documentation
+  - Tool documentation
+- Do NOT fabricate citations
+- If unsure, label clearly as:
+  “AI-generated synthesis based on general industry discussion”
+
+====================================================================
+TECHNOLOGY REQUIREMENTS
+====================================================================
+Backend:
+- Python-based (Flask preferred)
+- Simple routing and template rendering
+- No authentication in Module 2 base app
+- No database dependency (in-memory or static data only)
+
+Frontend:
+- Server-rendered HTML + light client-side JavaScript
+- Modern but simple UI (clean layout, basic CSS)
+- No SPA frameworks
+- No build step (no webpack, vite, etc.)
+
+Containerization:
+- Single Dockerfile
+- Minimal base image
+- Expose one HTTP port
+- The application must be runnable locally and in-container using:
+  flask run --host=0.0.0.0 --port=5001
+  (Note: This is for lab simplicity and pre-container verification, not a production recommendation.)
+
+CI/CD Compatibility:
+- reference file docs/gitlab-ci.txt for eacmple of CI/CD pipeline
+- Designed to be built by GitLab CI
+- No hard-coded secrets
+- Environment-variable friendly
+- Deterministic startup behavior
+
+====================================================================
+INTENTIONAL (LAB-SAFE) SECURITY FLAWS
+====================================================================
+Include **non-destructive, lab-safe** weaknesses such as:
+- Missing security headers
+- Overly permissive input handling
+- No rate limiting
+- Verbose error messages
+- Trust in client-side validation
+
+DO NOT include:
+- Real exploit payloads
+- Malware
+- Credential harvesting
+- Anything unsafe outside a lab environment
+
+Clearly document:
+- Why each weakness exists
+- What security control will later mitigate it (WAF, API Security, Bot Defense)
+
+====================================================================
+SCOPE BOUNDARIES (VERY IMPORTANT)
+====================================================================
+This base app MUST NOT include:
+- API endpoints (reserved for Module 3)
+- Login or authentication flows
+- HTML forms that submit data
+- Bot protections
+- OpenAPI specs
+- Reference .clinerules files as needed
+
+Those will be added later by students using vibe coding + .clinerules.
+
+====================================================================
+REQUIRED PROJECT STRUCTURE
+====================================================================
+Generate the following files at minimum:
+
+/app
+  ├── app.py
+  ├── templates/
+  ├── static/
+  └── tests/
+
+/README.md
+/prd.md
+/todo.md
+/CHANGELOG.md
+/Dockerfile
+/requirements.txt
+
+====================================================================
+WORKFLOW FILE REQUIREMENTS
+====================================================================
+
+README.md (AS-IS, no polishing):
+- Explicitly state:
+  “This application is the product of vibe coding.”
+- Describe:
+  - What vibe coding is
+  - Why this app exists
+  - Known limitations
+  - Lab-only disclaimer
+
+prd.md:
+- Problem statement
+- Personas
+- Non-goals
+- User stories
+- MVP scope
+- Success metrics
+- Constraints (lab time, tooling, security tradeoffs)
+
+todo.md:
+- Immediate tasks
+- Known gaps
+- Deferred security items
+- Open questions
+- Direct links to source documents
+
+CHANGELOG.md:
+- Initial v0.1 entry
+- Clearly note “AI-generated baseline”
+
+====================================================================
+TESTING REQUIREMENTS
+====================================================================
+- Include basic unit tests
+- Tests must:
+  - Validate app startup
+  - Validate main routes return HTTP 200
+- Tests should pass locally and in CI
+- No external dependencies
+
+====================================================================
+STYLE & DOCUMENTATION
+====================================================================
+- Clear comments explaining WHY decisions were made
+- Explicit callouts when something is “good enough for a demo”
+- Neutral, educational tone
+- No marketing language
+
+====================================================================
+FINAL INSTRUCTION
+====================================================================
+Generate the COMPLETE base application, files, and documentation.
+Assume this code will be reviewed by:
+- Security engineers
+- Platform engineers
+- Students learning why vibe coding must be secured
+
+Do not ask questions.
+Do not add features outside this scope.
+Proceed with implementation.
+
+
+
+==========================
+Prompt Improve look and layout
+==========================
+
+Create a prompt to look the current look of the web application following the following requirements:
+
+- Name of the Web applicaiton: F5 AI Generated Application
+- USE cdn tailwindcss
+- This an F5 app, please use F5 Brand elements, logos, fonts, Iconography, photography, colors and F5 Application Delivery and Security Platform
+- References: https://brand.f5.com/d/yYzHXTsZ4EGq/elements#/-/brand-elements
+- Download elemetns form brand.f5.com if possible
+- Expand content 
+  - History of Vibe coding
+  - Compare AI assisted coding vs Vibe coding
+  - FAQ Section
+- Crete a better layout for the home page with multiple division and pictures 
+
+
+=====================
+
+```text
+SYSTEM / ROLE
+You are an AI front-end designer and UX engineer working on the **AppWorld 2026 – Code. Secure. Repeat.** lab.
+Your task is to IMPROVE the LOOK & FEEL of an existing Flask-based web application without changing its backend behavior.
+
+This work is **UI/UX ONLY**.
+Do NOT add APIs, login logic, forms with POST actions, or new backend routes unless explicitly instructed.
+
+====================================================================
+APPLICATION CONTEXT
+====================================================================
+Application name:
+- **F5 AI Generated Application**
+
+Purpose:
+- Educational, lab-only web application
+- Demonstrates AI-assisted development and “vibe coding”
+- Serves as the base UI for Module 2 (visual polish only)
+
+====================================================================
+TECHNICAL CONSTRAINTS (NON-NEGOTIABLE)
+====================================================================
+- Backend: Python Flask (already exists)
+- Templates: Server-rendered HTML (Jinja2)
+- Styling:
+  - MUST use **CDN-hosted Tailwind CSS**
+  - NO frontend build tools
+  - NO Node.js, npm, Vite, Webpack, etc.
+- Keep all HTML simple and readable
+- Must remain container-friendly
+
+====================================================================
+F5 BRAND REQUIREMENTS (VERY IMPORTANT)
+====================================================================
+This is an **F5-branded application**.
+
+You MUST align the UI with **F5 Brand Guidelines**:
+
+Reference:
+- https://brand.f5.com/d/yYzHXTsZ4EGq/elements#/-/brand-elements
+
+Brand expectations:
+- Use **F5 color palette** (primary reds, blacks, whites, grays)
+- Use **F5 typography style** (as close as possible with web-safe or CDN fonts)
+- Use **F5 iconography style** (simple, modern, security-focused)
+- Use **F5 photography style** (abstract tech, application security, cloud, AI themes)
+- Reference **F5 Application Delivery and Security Platform** in messaging
+
+If assets (logos/images) cannot be downloaded automatically:
+- Reference them by placeholder filename
+- Clearly comment where F5 assets should be inserted
+- Do NOT fabricate logos or misuse trademarks
+
+====================================================================
+HOME PAGE LAYOUT REQUIREMENTS
+====================================================================
+Redesign the home page with a **modern, professional, F5-style layout** using Tailwind.
+
+The home page should include:
+
+1) HERO SECTION
+- Application name: “F5 AI Generated Application”
+- Subtitle explaining AI-generated / vibe-coded nature
+- F5-style visual (hero image or placeholder)
+- Clear professional tone (not marketing fluff)
+
+2) MULTI-SECTION CONTENT LAYOUT
+Use multiple horizontal sections with good spacing and hierarchy.
+
+Required sections:
+- What is Vibe Coding?
+- History of Vibe Coding
+- AI-Assisted Coding vs Vibe Coding (comparison section)
+- Why Security Matters for AI-Generated Apps (tie to F5)
+- FAQ Section
+
+Use:
+- Cards
+- Grid layouts
+- Icons (Tailwind-compatible SVGs or placeholders)
+- Visual separation between sections
+
+3) VISUALS
+- Include image placeholders or references for:
+  - AI + development
+  - Application security
+  - Cloud-native platforms
+- Clearly mark where F5 photography should be used
+
+====================================================================
+CONTENT REQUIREMENTS
+====================================================================
+Expand and refine content in a professional, educational tone.
+
+You MUST include:
+
+- **History of Vibe Coding**
+  - Origins
+  - Why it emerged
+  - How LLMs accelerated it
+
+- **AI-Assisted Coding vs Vibe Coding**
+  - Side-by-side comparison
+  - Strengths and weaknesses
+  - Where risks appear
+  - Statdistics of adoption
+  - Percentage of code being generated by LLM
+
+- **FAQ Section**
+  Include questions such as:
+  - What is vibe coding?
+  - Is vibe coding secure?
+  - How is this app generated?
+  - Why does F5 care about AI-generated apps?
+  - How does F5 help secure AI-generated applications?
+  - How does introducing F5 security controls into Ci/CD pipeline helps secure AI-generated applications?
+  - What are SAST and DAST tool
+  - What is runtime proection
+  - How is vibe coding change software development
+
+All content should:
+- Be readable by technical and semi-technical audiences
+- Avoid hype language
+- Be suitable for enterprise security discussions
+
+====================================================================
+WHAT NOT TO DO
+====================================================================
+- Do NOT change backend routes
+- Do NOT add JavaScript frameworks
+- Do NOT add login, APIs, or forms
+- Do NOT introduce marketing copy that sounds like an ad
+- Do NOT break existing Flask templates
+
+====================================================================
+OUTPUT EXPECTATION
+====================================================================
+Produce:
+- Updated HTML template(s) (home page focus)
+- Tailwind CDN inclusion
+- Clear comments where F5 brand assets should be inserted
+- Clean, readable structure suitable for lab use
+
+If unsure:
+- Choose clarity over complexity
+- Keep everything explainable in a live lab
+
+Proceed with the UI redesign now.
+
+====================================================================
+OTHER TASKS
+====================================================================
+
+Update todo.md
+Update CHANGELOG.md
+Update requirements.txt and Dockerfile accorddanly
+
+```

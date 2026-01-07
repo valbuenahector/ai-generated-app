@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}F5 AI Generated Application{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        f5red: '#ED1C24',
+                        f5black: '#000000',
+                        f5gray: {
+                            100: '#F1F1F1',
+                            200: '#E1E1E1',
+                            300: '#D1D1D1',
+                            400: '#A1A1A1',
+                            500: '#616161',
+                            600: '#414141',
+                            700: '#313131',
+                            800: '#212121',
+                            900: '#111111',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-f5gray-100 text-f5black font-sans min-h-screen">
+    <div class="max-w-7xl mx-auto flex flex-col min-h-screen shadow-2xl bg-white border-x border-f5gray-200">
+        
+        <header class="bg-f5black text-white sticky top-0 z-50 shadow-md">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-2">
+                        <!-- F5 Logo -->
+                        <img src="{{ url_for('static', filename='images/f5-logo-rgb.svg') }}" alt="F5 Logo" class="h-10">
+                        <span class="text-xl font-bold tracking-tight">AppWorld 2026</span>
+                    </div>
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="{{ url_for('home') }}" class="hover:text-f5red transition-colors duration-200">Home</a>
+                        <a href="{{ url_for('about') }}" class="hover:text-f5red transition-colors duration-200">About</a>
+                        <a href="{{ url_for('docs') }}" class="hover:text-f5red transition-colors duration-200">Docs</a>
+                    </nav>
+                <div class="flex items-center space-x-4">
+                    <!-- Right Menu Placeholder (Login planned for Module 3) -->
+                </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="bg-f5red text-white py-2 text-center text-sm font-medium tracking-wide">
+            "This application is the product of vibe coding." — Lab-Only Environment
+        </div>
+
+        <main class="flex-grow">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="bg-f5gray-900 text-white py-12">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-f5gray-800 pb-8 mb-8">
+                    <div>
+                        <h3 class="text-f5red font-bold text-lg mb-4 uppercase tracking-tighter">F5 AI Generated Application</h3>
+                        <p class="text-f5gray-400 text-sm leading-relaxed">
+                            Educational project for AppWorld 2026 demonstrating AI-assisted development and security integration.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-4">Resources</h4>
+                        <ul class="text-f5gray-400 text-sm space-y-2">
+                            <li><a href="{{ url_for('docs') }}" class="hover:text-white">Vibe Coding Documentation</a></li>
+                            <li><a href="https://brand.f5.com" class="hover:text-white" target="_blank">F5 Brand Guidelines</a></li>
+                            <li><a href="#" class="hover:text-white">AppWorld 2026 Lab Guide</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-4">Platform</h4>
+                        <p class="text-f5gray-400 text-sm leading-relaxed">
+                            Part of the <span class="text-white">F5 Application Delivery and Security Platform</span> training curriculum.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row justify-between items-center text-f5gray-500 text-xs">
+                    <p>&copy; 2026 F5 Networks, Inc. All rights reserved. | Code. Secure. Repeat.</p>
+                    <div class="flex space-x-4 mt-4 md:mt-0 uppercase tracking-widest">
+                        <span>Lab-Only</span>
+                        <span>No Production Use</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

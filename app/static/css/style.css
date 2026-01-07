@@ -1,0 +1,23 @@
+/* Reset conflicting legacy styles to let Tailwind handle layout */
+body {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    background-color: transparent;
+}
+
+/* Maintain custom vibe styles if still used, but remove layout constraints */
+.vibe-callout {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    font-style: italic;
+}
+
+/* Ensure images fit their containers */
+img {
+    max-width: 100%;
+    height: auto;
+}
