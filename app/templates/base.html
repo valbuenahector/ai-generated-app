@@ -48,9 +48,15 @@
                         <a href="{{ url_for('home') }}" class="hover:text-f5red transition-colors duration-200">Home</a>
                         <a href="{{ url_for('about') }}" class="hover:text-f5red transition-colors duration-200">About</a>
                         <a href="{{ url_for('docs') }}" class="hover:text-f5red transition-colors duration-200">Docs</a>
+                        <a href="{{ url_for('contact') }}" class="hover:text-f5red transition-colors duration-200">Contact</a>
                     </nav>
                 <div class="flex items-center space-x-4">
-                    <!-- Right Menu Placeholder (Login planned for Module 3) -->
+                    {% if session.get('user') %}
+                        <span class="text-sm font-medium text-f5gray-400">Welcome, <span class="text-white">{{ session['user'] }}</span></span>
+                        <a href="{{ url_for('logout') }}" class="text-sm font-medium hover:text-f5red transition-colors duration-200">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="bg-f5red hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-bold transition-all duration-200 transform hover:scale-105 shadow-lg">Login</a>
+                    {% endif %}
                 </div>
                 </div>
             </div>

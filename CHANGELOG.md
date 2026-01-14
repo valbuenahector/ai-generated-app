@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-01-12
+### Added
+- **Module 3: Login + Contact Forms**
+- Demo-only Login page with flat-file authentication and hashed credentials.
+- Contact form with server-side validation and in-memory logging.
+- Navigation updates to include Contact link and Login CTA button.
+- Updated README.md with Module 3 feature documentation.
+- New unit tests for Login and Contact routes.
+
+## [0.2.0] - 2026-01-12
+### Added
+- **Module 3: API Discovery & OpenAPI**
+- Three JSON API endpoints under `/api/`:
+  - `GET /api/status`: Returns API status and version.
+  - `GET /api/vibe-coding`: Returns Vibe Coding definitions parsed from documentation.
+  - `GET /api/ai-assisted-coding`: Returns AI tools info parsed from documentation.
+- OpenAPI 3.0.3 specification file at `openapi/openapi.json`.
+- Comprehensive unit tests for new API endpoints and OpenAPI spec.
+- Updated README.md with Module 3 details.
+
 ## [0.2.5] - 2026-01-06
 ### Changed
 - Replaced F5 ADSP Hero PNG with Gemini generated AI visual on Home page.

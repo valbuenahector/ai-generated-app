@@ -11,6 +11,23 @@ Vibe coding is an AI-assisted development technique where developers build appli
 ## Lab-Only Disclaimer
 This application is for educational and security demonstration purposes only. It is intentionally configured with security weaknesses and should not be used in a production environment.
 
+## Module 3: API Discovery & Interactive Features
+In this module, we've extended the application with JSON API endpoints, a login page, and a contact form to demonstrate API discovery, bot defense, and application security.
+
+### New Features
+- **Login Page**: Demo-only authentication using a local flat file.
+  - **Credentials**: `f5user` / `f5password` (lab-only)
+  - Credential storage uses PBKDF2 hashing (no plaintext stored).
+- **Contact Form**: Interactive form for demo submissions (stored in-memory).
+- **API Endpoints**:
+  - `GET /api/status`: General API health and versioning.
+  - `GET /api/vibe-coding`: Structured content about Vibe Coding definitions.
+  - `GET /api/ai-assisted-coding`: Information on popular AI coding tools.
+- **OpenAPI Specification**:
+  - Located at `openapi/openapi.json`.
+  - Conforms to OpenAPI 3.0.3.
+  - Used for automated API discovery and protection.
+
 ## Getting Started
 
 ### Local Development (Host Machine)
