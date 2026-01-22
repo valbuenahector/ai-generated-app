@@ -1,0 +1,239 @@
+# .gitlab-ci.yml
+#
+# AppWorld 2026 – Module 2/3 Lab
+# Security-as-Code gate using security-controls.yaml
+#
+# Stages:
+#   1) policy_gate: enforce baseline security controls + conditional requirements
+#   2) test: app tests
+#   3) build: build & push image
+#   4) deploy: terraform apply (vK8s + LB + security toggles)
+#
+# Files:
+#   - security-controls.yaml (required)
+#   - openapi/openapi.json (required if api_discovery.enabled: true)
+#   - app/templates/login.html + app/templates/contact.html (required if bot_advanced.enabled: true)
+#
+# Outputs:
+#   - features.env (dotenv artifact) => ENABLE_WAF, ENABLE_API_DISCOVERY, ENABLE_BOT_ADVANCED, ENABLE_RATE_LIMITING
+
+stages:
+  - policy_gate
+  - test
+  - build
+  - deploy
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - when: never
+
+default:
+  interruptible: true
+
+# ---------------------------
+# Stage 1 – POLICY GATE
+# ---------------------------
+policy_gate:
+  stage: policy_gate
+  image: python:3.11-slim
+  rules:
+    - when: always
+  script:
+    - pip install --no-cache-dir -r scripts/requirements.txt
+    - python3 scripts/validate_security_controls.py
+  artifacts:
+    # This makes features.env available to all subsequent stages
+    reports:
+      dotenv: features.env
+    paths:
+      - features.env
+    expire_in: 2 hours
+ 
+# ---------------------------
+# Stage 2 – TEST- PROBABLY A DUMMY STAGE
+# ---------------------------
+test:
+  stage: test
+  # If you use Docker executor runners, set an image.
+  # If you use Shell runner, remove image and ensure python/pytest exist on the runner VM.
+  image: python:3.11-slim
+  needs: ["policy_gate"]
+  rules:
+    - when: on_success
+  script:
+    - python -V
+    - pip install -r requirements.txt
+    - pytest -q
+
+# ---------------------------
+# Stage 3 – BUILD & PUSH IMAGE (ACR, amd64, short-sha tag)
+# Image format:
+#   <login-server>/appworld/<student-id>/<app>:${CI_COMMIT_SHORT_SHA}
+# Where:
+#   <student-id> == $F5XC_NAMESPACE
+#   <app>        == $APP_NAME (default: f5-ai-generated-app)
+# ---------------------------
+build_and_push:
+  stage: build
+  image: docker:27
+  services:
+    - docker:27-dind
+  needs: ["policy_gate", "test"]
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_BUILDKIT: "1"
+  rules:
+    - when: on_success
+
+  before_script:
+    - set -euo pipefail
+
+    # --- Required variables ---
+    - test -n "${ACR_LOGIN_SERVER:?ACR_LOGIN_SERVER is required}"
+    - test -n "${ACR_USERNAME:?ACR_USERNAME is required}"
+    - test -n "${ACR_PASSWORD:?ACR_PASSWORD is required}"
+    - test -n "${F5XC_NAMESPACE:?F5XC_NAMESPACE (student-id) is required}"
+    - test -n "${CI_COMMIT_SHORT_SHA:?CI_COMMIT_SHORT_SHA is required}"
+
+    # Optional app name
+    - APP_NAME="${APP_NAME:-f5-ai-generated-app}"
+
+    # --- Login to ACR ---
+    - docker login "$ACR_LOGIN_SERVER" -u "$ACR_USERNAME" -p "$ACR_PASSWORD"
+
+    # --- Enable buildx for explicit amd64 builds ---
+    - docker buildx create --use --name appworld-builder || docker buildx use appworld-builder
+
+  script:
+    - set -euo pipefail
+
+    # Construct image ref
+    - IMAGE_REF="${ACR_LOGIN_SERVER}/appworld/${F5XC_NAMESPACE}/${APP_NAME}:${CI_COMMIT_SHORT_SHA}"
+    - echo "Building and pushing: ${IMAGE_REF}"
+
+    # Build + push (amd64)
+    - docker buildx build --platform linux/amd64 -t "$IMAGE_REF" --push .
+
+    # Export for deploy stage (Terraform reads IMAGE_REF from dotenv)
+    - echo "IMAGE_REF=$IMAGE_REF" > build.env
+    - cat build.env
+
+  artifacts:
+    reports:
+      dotenv: build.env
+    paths:
+      - build.env
+    expire_in: 2 hours
+
+# ---------------------------
+# Stage 3.1 – PROVISION WORKLOAD (API Plan B)
+# ---------------------------
+provision_vk8s_workload:
+  stage: build
+  image: python:3.11-slim
+  needs:
+    - job: policy_gate
+      artifacts: true
+    - job: build_and_push
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - when: never
+
+  before_script:
+    - pip install requests
+    - test -n "${F5XC_API_URL:?F5XC_API_URL is required}"
+    - test -n "${F5XC_TENANT:?F5XC_TENANT is required}"
+    - test -n "${F5XC_NAMESPACE:?F5XC_NAMESPACE is required}"
+    - test -n "${F5XC_SITE_NAME:?F5XC_SITE_NAME is required}"
+    - test -n "${F5XC_WORKLOAD_NAME:?F5XC_WORKLOAD_NAME is required}"
+    - test -n "${IMAGE_REF:?IMAGE_REF is required (from build.env)}"
+    - test -n "${F5XC_REGISTRY_NAME:?F5XC_REGISTRY_NAME is required}"
+    - test -n "${F5XC_WORKLOAD_PORT:?F5XC_WORKLOAD_PORT is required}"
+
+    # --- REQUIRED if using p12 auth for Python too ---
+    - test -n "${F5XC_API_P12_FILE:?F5XC_API_P12_FILE is required}"
+    - test -n "${VES_P12_PASSWORD:?VES_P12_PASSWORD is required}"
+    - export F5XC_API_P12_FILE="$F5XC_API_P12_FILE"
+    - export VES_P12_PASSWORD="$VES_P12_PASSWORD"
+
+  script:
+    - pip install --no-cache-dir -r scripts/requirements.txt
+    - python3 scripts/workload_manager.py upsert
+
+# ---------------------------
+# Stage 4 – DEPLOY (Terraform)
+# ---------------------------
+deploy_f5xc:
+  stage: deploy
+  image: hashicorp/terraform:1.6
+  needs:
+    - job: policy_gate
+      artifacts: true
+    - job: build_and_push
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - when: never
+
+  variables:
+    TF_IN_AUTOMATION: "true"
+    TF_INPUT: "false"
+    TF_CLI_ARGS: "-no-color"
+
+  before_script:
+    - set -euo pipefail
+    - cd terraform
+
+    # Required runtime inputs (not "over validation")
+    - test -n "${F5XC_NAMESPACE:?F5XC_NAMESPACE is required}"
+    # From Stage 1 (policy_gate dotenv). We do NOT re-check file existence here.
+    - test -n "${ENABLE_WAF:?ENABLE_WAF missing - check policy_gate dotenv}"
+    - test -n "${ENABLE_API_DISCOVERY:?ENABLE_API_DISCOVERY missing - check policy_gate dotenv}"
+    - test -n "${ENABLE_BOT_ADVANCED:?ENABLE_BOT_ADVANCED missing - check policy_gate dotenv}"
+    - test -n "${ENABLE_RATE_LIMITING:?ENABLE_RATE_LIMITING missing - check policy_gate dotenv}"
+    # --- REQUIRED for p12 auth ---
+    - test -n "${F5XC_API_P12_FILE:?F5XC_API_P12_FILE is required}"
+    - test -n "${VES_P12_PASSWORD:?VES_P12_PASSWORD is required}"
+
+    # Provider/Terraform expected env var names
+    - export TF_VAR_f5xc_api_p12_file="$F5XC_API_P12_FILE"
+    - export VES_P12_PASSWORD="$VES_P12_PASSWORD"
+
+    - terraform version
+    - terraform init -upgrade
+
+  script:
+    - set -euo pipefail
+    - |
+      # Only pass OpenAPI path if the policy gate enabled API discovery.
+      # No extra checks here (policy gate already enforced presence if enabled).
+      OPENAPI_VAR_ARGS=""
+      if [ "${ENABLE_API_DISCOVERY}" = "true" ]; then
+        OPENAPI_VAR_ARGS='-var=openapi_spec_path=../openapi/openapi.json'
+      fi
+
+      terraform apply -auto-approve \
+          -var "f5xc_namespace=${F5XC_NAMESPACE}" \
+          -var "f5xc_api_url=${F5XC_API_URL}" \
+          -var "f5xc_tenant=${F5XC_TENANT}" \
+          -var "f5xc_site_name=${F5XC_SITE_NAME}" \
+          -var "f5xc_workload_name=${F5XC_WORKLOAD_NAME}" \
+          -var "app_domain=${APP_DOMAIN}" \
+          -var "enable_waf=${ENABLE_WAF}" \
+          -var "enable_api_discovery=${ENABLE_API_DISCOVERY}" \
+          -var "enable_bot_advanced=${ENABLE_BOT_ADVANCED}" \
+          -var "enable_rate_limiting=${ENABLE_RATE_LIMITING}"
+
+  artifacts:
+    when: always
+    paths:
+      - terraform/terraform.tfstate
+      - terraform/terraform.tfstate.backup
+    expire_in: 2 hours
+

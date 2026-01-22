@@ -3,6 +3,8 @@ __pycache__/
 .pytest_cache/
 .env
 .DS_Store
-.clinerules-old
 .dockerignore
-temp.txt
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
