@@ -51,7 +51,7 @@ policy_gate:
     paths:
       - features.env
     expire_in: 2 hours
- 
+
 # ---------------------------
 # Stage 2 – TEST- PROBABLY A DUMMY STAGE
 # ---------------------------
@@ -111,7 +111,7 @@ build_and_push:
     - set -euo pipefail
 
     # Construct image ref
-    - IMAGE_REF="${ACR_LOGIN_SERVER}/appworld/${F5XC_NAMESPACE}/${APP_NAME}:${CI_COMMIT_SHORT_SHA}"
+    - IMAGE_REF="${ACR_LOGIN_SERVER}/appworldregistry/${F5XC_NAMESPACE}/${APP_NAME}:${CI_COMMIT_SHORT_SHA}"
     - echo "Building and pushing: ${IMAGE_REF}"
 
     # Build + push (amd64)
@@ -213,10 +213,10 @@ deploy_f5xc:
     - |
       # Only pass OpenAPI path if the policy gate enabled API discovery.
       # No extra checks here (policy gate already enforced presence if enabled).
-      OPENAPI_VAR_ARGS=""
-      if [ "${ENABLE_API_DISCOVERY}" = "true" ]; then
-        OPENAPI_VAR_ARGS='-var=openapi_spec_path=../openapi/openapi.json'
-      fi
+      # OPENAPI_VAR_ARGS=""
+      # if [ "${ENABLE_API_DISCOVERY}" = "true" ]; then
+      #   OPENAPI_VAR_ARGS='-var=openapi_spec_path=../openapi/openapi.json'
+      # fi
 
       terraform apply -auto-approve \
           -var "f5xc_namespace=${F5XC_NAMESPACE}" \

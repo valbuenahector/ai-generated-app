@@ -46,9 +46,3 @@ variable "enable_rate_limiting" {
   default = false
 }
 
-variable "openapi_spec_path" {
-  type    = string
-  default = ""
-}
-
-

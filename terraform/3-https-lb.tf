@@ -10,14 +10,21 @@ resource "volterra_http_loadbalancer" "f5aiapp-lb" {
   name      = "${var.f5xc_namespace}-f5aiapp-lb"
   namespace = var.f5xc_namespace
   domains   = ["${var.f5xc_namespace}-lb.${var.app_domain}"]
-  // HTTPS configuration with automatic certificate management
-  https_auto_cert {
+  // HTTPS configuration with existing certificate
+  https {
     add_hsts              = true
     http_redirect         = true
-    no_mtls               = true
     enable_path_normalize = true
-    tls_config {
-      default_security = true
+    port = 443
+    tls_cert_params {
+      certificates {
+        name      = "lab-app-wildcard"
+        namespace = "shared"
+      }
+      no_mtls = true
+      tls_config {
+        default_security = true
+      }
     }
   }
 
@@ -87,7 +94,6 @@ resource "volterra_http_loadbalancer" "f5aiapp-lb" {
   # ---------------------------
   # Module 3 Task (API Discovery) — only when enabled
   # - api_specification supports referencing an API definition object
-  # - discovery controls exist under single_lb_app.enable_discovery (marked deprecated in schema, but still modeled)
   # ---------------------------
   dynamic "api_specification" {
     for_each = var.enable_api_discovery ? [1] : []
@@ -95,16 +101,18 @@ resource "volterra_http_loadbalancer" "f5aiapp-lb" {
       validation_disabled = false
 
       api_definition {
-        name      = volterra_api_definition.f5aiapp_api_def[0].name
+        name      = "openapi"
+        # This namespace is for testing the API definitio will be a shared resource
         namespace = var.f5xc_namespace
+        # namespace = "shared"
       }
     }
   }
 
-  dynamic "single_lb_app" {
+  dynamic "enable_api_discovery" {
     for_each = var.enable_api_discovery ? [1] : []
     content {
-      enable_discovery {}
+      enable_learn_from_redirect_traffic = true
     }
   }
 }

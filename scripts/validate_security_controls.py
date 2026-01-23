@@ -57,7 +57,7 @@ def main():
             if not os.path.isfile(template):
                 missing_templates.append(template)
         if len(missing_templates) > 0:
-            fail(f"Advanced BOT protection is enabled, but {', '.join(missing_templates)} {"are" if len(missing_templates) > 1 else 'is'} missing.")
+            fail(f"Advanced BOT protection is enabled, but {', '.join(missing_templates)} {'are' if len(missing_templates) > 1 else 'is'} missing.")
 
     # Export dotenv for downstream stages
     try:
@@ -71,5 +71,4 @@ def main():
         fail(f"Could not write to {FEATURES_ENV}: {e}")
 
 if __name__ == "__main__":
-    main()
- 
+    main() 

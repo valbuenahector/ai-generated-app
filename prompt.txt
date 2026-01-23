@@ -402,3 +402,13 @@ Update CHANGELOG.md
 Update requirements.txt and Dockerfile accorddanly
 
 ```
+
+=====
+
+Update terraform/4-https-lb.tf file with the following cirteria:
+
+1.- Replace the https_auto_cert block with a https block. the https lb object will reference an
+existing certificate called "lab-app-wildcard"
+2.- Enable enable_api_discovery and reference the API Definition created in terraform/3-api-definition.tf
+3.- To help you wit the schema please file terraform/volterra_http_loadbalancer.json
+4.- link to terraform resource documentation is https://registry.terraform.io/providers/volterraedge/volterra/latest/docs/resources/volterra_http_loadbalancer
