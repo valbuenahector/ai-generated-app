@@ -37,6 +37,12 @@ def test_healthz_route(client):
     assert rv.status_code == 200
     assert rv.data == b"OK"
 
+def test_alive_route(client):
+    """Test that the alive route returns the content 'UP'."""
+    rv = client.get('/alive')
+    assert rv.status_code == 200
+    assert b"UP" in rv.data
+
 def test_404_error(client):
     """Test that a non-existent route returns a 404 status code."""
     rv = client.get('/non-existent-page')

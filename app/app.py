@@ -77,6 +77,11 @@ def healthz():
     """Simple health endpoint returning 200, plain text."""
     return "OK", 200
 
+@app.route('/alive')
+def alive():
+    """Simple alive endpoint returning alive.html content."""
+    return render_template('alive.html')
+
 @app.route('/api/status')
 def api_status():
     """Module 3: API Status endpoint."""

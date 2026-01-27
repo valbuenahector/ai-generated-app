@@ -16,7 +16,7 @@ Operations:
 
 Required Environment Variables (GitLab CI/CD):
     F5XC_API_URL            - The API endpoint URL (e.g., https://tenant.console.ves.volterra.io/api)
-    TF_VAR_f5xc_api_p12_file - Path to your F5XC API P12 certificate file
+ 
     VES_P12_PASSWORD        - Password for the P12 certificate
     F5XC_TENANT        - Your F5XC Tenant name
     F5XC_NAMESPACE     - The F5XC Namespace to operate in
@@ -31,7 +31,6 @@ Optional Environment Variables:
 
 Example:
     export F5XC_API_URL="https://my-tenant.console.ves.volterra.io/api"
-    export TF_VAR_f5xc_api_p12_file="path-to-cert.p12"
     export VES_P12_PASSWORD="passowrd"
     export F5XC_TENANT="my-tenant"
     export F5XC_NAMESPACE="my-ns"
@@ -97,7 +96,7 @@ class VolterraWorkloadManager:
                             "image": {
                                 "name": image,
                                 "container_registry": {
-                                    "namespace": self.namespace,
+                                    "namespace": "shared",
                                     "name": container_registry_name,
                                     "kind": "container_registry"
                                 },
@@ -114,7 +113,7 @@ class VolterraWorkloadManager:
                         "deploy_ce_virtual_sites": {
                             "virtual_site": [
                                 {
-                                    "namespace": site_namespace,
+                                    "namespace": "shared",
                                     "name": site_name,
                                     "kind": "virtual_site"
                                 }
@@ -212,7 +211,7 @@ def main():
         'F5XC_API_URL', 'F5XC_TENANT', 
         'F5XC_NAMESPACE', 'F5XC_SITE_NAME', 'F5XC_WORKLOAD_NAME', 'IMAGE_REF',
         'F5XC_REGISTRY_NAME', 'F5XC_WORKLOAD_PORT',
-        'TF_VAR_f5xc_api_p12_file', 'VES_P12_PASSWORD'
+        'F5XC_API_P12_FILE', 'VES_P12_PASSWORD'
     ]
     
     missing = [v for v in required_vars if not os.getenv(v)]
@@ -233,7 +232,7 @@ def main():
     site_namespace = os.getenv('F5XC_SITE_NAMESPACE', 'shared')
 
 
-    p12_file = os.getenv('TF_VAR_f5xc_api_p12_file')
+    p12_file = os.getenv('F5XC_API_P12_FILE')
     p12_password = os.getenv('VES_P12_PASSWORD')
 
     manager = VolterraWorkloadManager(api_url, tenant, namespace, p12_file, p12_password)

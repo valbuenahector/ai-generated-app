@@ -1,205 +1,233 @@
 # .clinerules — AppWorld 2026 (Module 2 + Module 3 Guardrails)
 # Purpose:
-#   - Guardrail vibe coding for BOTH Module 2 (base app) and Module 3 (incremental features)
-#   - Prevent scope bleed, overengineering, or breaking CI/CD feature detection
-#   - Ensure predictable behavior with Gemini 2.5 Flash + Cline
+#   - Guardrail vibe coding for Module 2 (base app) and Module 3 (incremental features)
+#   - Prevent scope bleed, CI/CD breakage, or architectural churn
+#   - Ensure deterministic behavior with Gemini + Cline
 #
-# IMPORTANT:
-#   - Module 2 and Module 3 work happens in the SAME repository and folder.
-#   - Rules below are authoritative and override any model “best practice” suggestions.
+# AUTHORITATIVE:
+#   These rules override any generic “best practice” suggestions.
 #
-# Lab theme: Code fast → Observe risk → Secure with F5XC → Repeat
+# Lab theme:
+#   Code fast → Observe risk → Secure with F5XC → Repeat
 
-====================================================================
-0) GLOBAL NON-NEGOTIABLE LAB CONSTRAINTS
-====================================================================
+===============================================================================
+0) GLOBAL LAB CONSTRAINTS (NON-NEGOTIABLE)
+===============================================================================
+
 - LAB-ONLY application for AppWorld 2026.
 - This is NOT production software.
 - Do NOT refactor large portions of the app unless explicitly instructed.
-- Avoid architectural churn; incremental change is the goal.
-- Keep all changes explainable in a 2-hour lab.
+- Incremental change only — no rewrites.
+- Every change must be explainable within a 2-hour lab.
 
-====================================================================
+===============================================================================
 1) MODULE AWARENESS & PHASE CONTROL
-====================================================================
-The assistant MUST be aware of the current module context.
+===============================================================================
 
-MODULE 2 (Base App):
-- Build the initial application scaffold only. This ALready DONE
-- NO APIs, NO login, NO forms.
+The assistant MUST know which module is active.
 
-MODULE 3 (Incremental Features):
-- Add APIs, OpenAPI spec, login page, and HTML form.
-- Do NOT redesign or replace the Module 2 base app.
-- Extend existing files where possible.
+MODULE 2 — Base App (Already Exists):
+- No APIs
+- No login
+- No forms
+- No OpenAPI
+- Purpose: CI/CD + baseline security controls
 
-If unsure which module is active:
-- ASK before implementing.
+MODULE 3 — Incremental Features:
+- APIs + OpenAPI
+- Login page
+- Contact form
+- Purpose: API Security + Bot Defense
 
-====================================================================
-2) STRICT SCOPE BOUNDARIES BY MODULE
-====================================================================
+If the active module is unclear:
+- STOP
+- ASK the user which module they are in
+- DO NOT implement changes
+
+===============================================================================
+2) STRICT SCOPE BOUNDARIES
+===============================================================================
 
 -------------------------
-MODULE 2 – DO NOT BUILD
+MODULE 2 — DO NOT BUILD
 -------------------------
-- /api endpoints of any kind
+- /api endpoints
 - openapi/openapi.json
-- login page or authentication logic
-- HTML forms with POST actions
-- Bot mitigation, CAPTCHA, rate limiting
-- Database or persistent storage
+- login or authentication logic
+- HTML forms with POST
+- Bot protection logic
+- Rate limiting
+- Databases or persistent storage
 
 -------------------------
-MODULE 3 – NOW ALLOWED
+MODULE 3 — NOW ALLOWED
 -------------------------
 - API endpoints under /api/*
-- OpenAPI 3.0 specification
+- openapi/openapi.json (OpenAPI 3.x)
 - Login page (demo-only)
-- HTML contact form
-- Minimal in-memory data handling
+- Contact form
+- In-memory data handling only
 
-====================================================================
+===============================================================================
 3) CI/CD FEATURE DETECTION (CRITICAL)
-====================================================================
-CI/CD uses FILE PRESENCE to detect features.
-DO NOT rename, relocate, or omit these files.
+===============================================================================
+
+CI/CD uses FILE PRESENCE to enable security features.
+DO NOT rename, move, or omit these files.
 
 Feature triggers:
-- API Discovery:
-  - File MUST exist: openapi/openapi.json
-- Bot Defense Standard:
-  - File MUST exist: app/templates/login.html
+
+API Discovery:
+- REQUIRED file: openapi/openapi.json
+
+Bot Defense (Advanced):
+- REQUIRED file: app/templates/login.html
 
 Rules:
-- openapi/openapi.json MUST be valid JSON
-- app/templates/login.html MUST be a real rendered page
 - These files MUST NOT exist in Module 2
-- These files MUST exist after Module 3
+- These files MUST exist in Module 3
+- openapi/openapi.json MUST be valid JSON
+- login.html MUST render a real page
 
-====================================================================
-4) MODULE 3 – API ENDPOINT GUARDRAILS
-====================================================================
-When implementing APIs in Module 3:
+===============================================================================
+4) MODULE 3 — API ENDPOINT RULES
+===============================================================================
 
-- Prefix all APIs with /api/
+API requirements:
+- Prefix all routes with /api/
 - JSON responses only
-- Implement 2–4 simple endpoints max
-- Keep logic readable and intentionally imperfect
+- 2–4 endpoints maximum
+- Readable, intentionally simple logic
 
-Suggested api endpoint:
-- GET  /api/status
-- GET  /api/vibe-coding
-- GET  /api/ai-assisted-coding
+MANDATORY endpoints:
+- GET /api/status
+- GET /api/vibe-coding
+- GET /api/ai-assisted-coding
+
+Rules:
+- No authentication
+- Basic input handling only
+- Include at least ONE lab-safe weakness (see Section 8)
+
+===============================================================================
+5) MODULE 3 — OPENAPI SPEC RULES
+===============================================================================
+
+Location:
+- openapi/openapi.json
 
 Requirements:
-- Basic input handling
-- At least ONE lab-safe weakness (see Section 8)
-- No authentication required for APIs (API Security will enforce later)
-
-====================================================================
-5) MODULE 3 – OPENAPI SPEC RULES
-====================================================================
-- Location: openapi/openapi.json
-- Format: OpenAPI 3.0.x
-- Must describe ALL implemented API endpoints
-- Keep schemas minimal and readable
+- OpenAPI version: 3.0.x
+- Must document ALL implemented /api routes
+- Minimal schemas only
 
 OpenAPI MUST include:
-- info: title, version
-- servers: placeholder URL (no real domain)
-- paths: all /api routes
+- info (title, version)
+- servers (placeholder URL only)
+- paths
 - request/response schemas
 
 DO NOT:
 - Auto-generate from code
 - Over-model schemas
-- Add security schemes (handled by F5XC later)
+- Add security schemes
 
-====================================================================
-6) MODULE 3 – LOGIN PAGE GUARDRAILS
-====================================================================
-Login is DEMO-ONLY and exists to generate bot signals.
+===============================================================================
+6) MODULE 3 — LOGIN PAGE GUARDRAILS
+===============================================================================
+
+Purpose:
+- Generate bot signals (NOT real auth)
 
 Requirements:
 - File: app/templates/login.html
 - Routes:
   - GET  /login
   - POST /login
-- Use a hardcoded or in-memory demo user
-- Validate credentials server-side
-- Do NOT store passwords
-- Do NOT implement:
-  - MFA
-  - OAuth
-  - SSO
-  - External identity providers
+- Hardcoded or in-memory demo user
+- Server-side credential check
 
-Include at least one bot-relevant characteristic:
+DO NOT:
+- Store passwords
+- Add MFA, OAuth, SSO, or external IdPs
+
+Bot-relevant behavior (required):
 - Predictable login flow
 - No rate limiting
 - Simple username/password form
 
-====================================================================
-7) MODULE 3 – HTML FORM (CONTACT FORM) GUARDRAILS
-====================================================================
+===============================================================================
+7) MODULE 3 — CONTACT FORM RULES
+===============================================================================
+
 Requirements:
 - File: app/templates/contact.html
 - Routes:
   - GET  /contact
   - POST /contact
-- Store submissions in memory or log them
-- Minimal client-side validation (UX only)
-- Server-side must still accept input
+- Store submissions in memory or logs only
+- Minimal client-side validation
 
-Do NOT:
-- Persist data to disk or database
+DO NOT:
+- Persist data
 - Send emails
 - Upload files
 
-====================================================================
-8) INTENTIONAL LAB-SAFE SECURITY WEAKNESSES
-====================================================================
-Purpose: Allow WAAP, API Security, Bot Defense, and WAS to demonstrate value.
+===============================================================================
+8) INTENTIONAL LAB-SAFE WEAKNESSES
+===============================================================================
 
-Allowed (choose 1–2 per module change):
+Purpose:
+- Enable WAAP, API Security, Bot Defense, WAS demos
+
+Allowed (choose 1–2):
 - Missing security headers
-- Verbose error messages on one endpoint
+- Verbose error messages
 - Overly permissive input validation
-- No rate limiting on login or contact form
+- No rate limiting on login/contact
 
 NOT allowed:
 - Real exploit payloads
-- Destructive actions
 - Command execution
 - Persistent XSS
-- Secrets or credentials in repo
+- Secrets or credentials
 
 All weaknesses must be:
 - Non-destructive
-- Documented as lab-only
-- Easy to explain and later mitigate
+- Lab-only
+- Easy to explain and mitigate later
 
-====================================================================
-9) DOCKER & RUNTIME GUARDRAILS (ALL MODULES)
-====================================================================
+===============================================================================
+9) RUNTIME & DOCKER RULES (ALL MODULES)
+===============================================================================
+
+Docker:
 - Single Dockerfile only
-- Container listens on port 5000
-- EXPOSE 5000
 - App MUST bind to 0.0.0.0
 
-Local / Jump Host testing ONLY:
-- Map host port 5001 → container port 5000
-- Do NOT change container port to 5001
+Ports:
+- Module 1 demo app: 5000
+- Module 2 / 3 app: 5001
+
+Local testing:
+- flask run ONLY for jump host testing
 
 vK8s:
-- Always use container port 5000
-- No host port assumptions
+- Must use gunicorn
+- Any port is valid as long as:
+  - containerPort
+  - origin pool port
+  - LB origin port
+  all match
 
-====================================================================
-10) TESTING REQUIREMENTS & FAILURE STOP CONDITION (ALL MODULES)
-====================================================================
-Tests MUST be updated as features are added and MUST be executed using pytest.
+===============================================================================
+10) TESTING & FAILURE STOP CONDITIONS
+===============================================================================
+
+Tests:
+- MUST use pytest
+- MUST run in CI
+- No external dependencies
 
 Module 2 tests:
 - App imports
@@ -207,62 +235,72 @@ Module 2 tests:
 - GET /healthz returns 200
 
 Module 3 additional tests:
-- API endpoints return JSON + correct status
-- GET /login returns 200 (when implemented)
-- GET /contact returns 200 (when implemented)
-- openapi/openapi.json exists and parses as valid JSON
+- API endpoints return JSON
+- GET /login returns 200 (if implemented)
+- GET /contact returns 200 (if implemented)
+- openapi/openapi.json parses as valid JSON
 
-STRICT RULES:
-- All pytest tests MUST pass.
-- Tests MUST run in CI.
-- Tests MUST have no external dependencies.
-
-FAILURE HANDLING (IMPORTANT):
+Failure handling:
 - If pytest fails:
-  1) Analyze the failure output.
-  2) Apply a targeted fix aligned with these clinerules.
-  3) Re-run pytest.
+  1) Analyze output
+  2) Apply targeted fix
+  3) Re-run pytest
 
-- If the SAME test failure (same test name + error type)
-  occurs more than 5 consecutive times:
-  - STOP further code changes.
-  - DO NOT attempt additional fixes.
-  - Clearly report:
-    - The failing test(s)
-    - The error message(s)
-    - The attempted fixes
-  - Instruct the user to consult a Lab Assistant for help.
+STOP CONDITION:
+- If the SAME test fails 5 times consecutively:
+  - STOP coding
+  - Report failing test + error
+  - Instruct user to consult Lab Assistant
 
-PROHIBITED ACTIONS:
-- Do NOT disable, skip, or comment out tests.
-- Do NOT weaken assertions to force tests to pass.
-- Do NOT refactor unrelated code to fix tests.
+PROHIBITED:
+- Disabling tests
+- Weakening assertions
+- Refactoring unrelated code
 
-====================================================================
-11) DOCUMENTATION UPDATE RULES
-====================================================================
-When moving from Module 2 → Module 3, update:
+===============================================================================
+11) DOCUMENTATION UPDATES (MODULE 3 ONLY)
+===============================================================================
+
+When moving from Module 2 → Module 3:
 
 README.md:
-- Briefly list new Module 3 features
+- List new features
 - Mention OpenAPI file location
 
 todo.md:
-- Add security follow-ups (CSRF, rate limiting, validation)
+- Add security follow-ups
 
 CHANGELOG.md:
-- v0.2 – Module 3: APIs, login, contact form, OpenAPI
+- v0.2 – Module 3 features
 
-====================================================================
-12) OUTPUT EXPECTATION WHEN CODING
-====================================================================
-When implementing Module 3 features:
+===============================================================================
+12) OUTPUT EXPECTATION
+===============================================================================
+
+When implementing Module 3:
 - Provide minimal diffs or full updated files
 - Explicitly list:
   - New routes
   - New templates
-  - New OpenAPI content
-  - New/updated tests
-- Do NOT refactor unrelated Module 2 code
+  - OpenAPI changes
+  - Test updates
+- Do NOT refactor unrelated code
+
+===============================================================================
+13) FINAL MESSAGE TO STUDENT
+===============================================================================
+
+How to run:
+
+- Open Jump Host → Firefox
+- Use bookmarks in folder called "Module 2" to access the app and API endpoints
+
+Run app:
+- Open a new VSCode terminal
+- Use command: python3 app.py"
+
+Stop app:
+- Open a new VSCode terminal
+- Use command: pkill -f "python3 app.py"
 
 END OF RULES

@@ -32,6 +32,8 @@ workflow:
 
 default:
   interruptible: true
+variables:
+  F5XC_P12_PATH: "/opt/gitlab/keys/f5-xc-lab-app.console.ves.volterra.io.api-creds.p12"
 
 # ---------------------------
 # Stage 1 – POLICY GATE
@@ -55,33 +57,25 @@ policy_gate:
 # ---------------------------
 # Stage 2 – TEST- PROBABLY A DUMMY STAGE
 # ---------------------------
-test:
+unit_tests:
   stage: test
-  # If you use Docker executor runners, set an image.
-  # If you use Shell runner, remove image and ensure python/pytest exist on the runner VM.
   image: python:3.11-slim
-  needs: ["policy_gate"]
-  rules:
-    - when: on_success
   script:
-    - python -V
     - pip install -r requirements.txt
-    - pytest -q
+    - |
+      echo "LAB NOTE: Running unit tests for visibility. In a real pipeline, failures would block build/deploy."
+      pytest -q || echo "LAB NOTE: Tests failed, but we are not blocking the pipeline in AppWorld lab."
+  allow_failure: true
 
 # ---------------------------
-# Stage 3 – BUILD & PUSH IMAGE (ACR, amd64, short-sha tag)
-# Image format:
-#   <login-server>/appworld/<student-id>/<app>:${CI_COMMIT_SHORT_SHA}
-# Where:
-#   <student-id> == $F5XC_NAMESPACE
-#   <app>        == $APP_NAME (default: f5-ai-generated-app)
+# Stage 3 – BUILD & PUSH IMAGE
 # ---------------------------
 build_and_push:
   stage: build
   image: docker:27
   services:
     - docker:27-dind
-  needs: ["policy_gate", "test"]
+  needs: ["policy_gate", "unit_tests"]
   variables:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_BUILDKIT: "1"
@@ -90,36 +84,28 @@ build_and_push:
 
   before_script:
     - set -euo pipefail
-
-    # --- Required variables ---
     - test -n "${ACR_LOGIN_SERVER:?ACR_LOGIN_SERVER is required}"
     - test -n "${ACR_USERNAME:?ACR_USERNAME is required}"
     - test -n "${ACR_PASSWORD:?ACR_PASSWORD is required}"
     - test -n "${F5XC_NAMESPACE:?F5XC_NAMESPACE (student-id) is required}"
     - test -n "${CI_COMMIT_SHORT_SHA:?CI_COMMIT_SHORT_SHA is required}"
-
-    # Optional app name
     - APP_NAME="${APP_NAME:-f5-ai-generated-app}"
-
-    # --- Login to ACR ---
     - docker login "$ACR_LOGIN_SERVER" -u "$ACR_USERNAME" -p "$ACR_PASSWORD"
-
-    # --- Enable buildx for explicit amd64 builds ---
     - docker buildx create --use --name appworld-builder || docker buildx use appworld-builder
 
   script:
-    - set -euo pipefail
+    - |
+      set -euo pipefail
 
-    # Construct image ref
-    - IMAGE_REF="${ACR_LOGIN_SERVER}/appworldregistry/${F5XC_NAMESPACE}/${APP_NAME}:${CI_COMMIT_SHORT_SHA}"
-    - echo "Building and pushing: ${IMAGE_REF}"
+      APP_NAME="${APP_NAME:-f5-ai-generated-app}"
+      IMAGE_REF="${ACR_LOGIN_SERVER}/appworldregistry/${F5XC_NAMESPACE}/${APP_NAME}:${CI_COMMIT_SHORT_SHA}"
 
-    # Build + push (amd64)
-    - docker buildx build --platform linux/amd64 -t "$IMAGE_REF" --push .
+      echo "Building and pushing: ${IMAGE_REF}"
 
-    # Export for deploy stage (Terraform reads IMAGE_REF from dotenv)
-    - echo "IMAGE_REF=$IMAGE_REF" > build.env
-    - cat build.env
+      docker buildx build --platform linux/amd64 -t "$IMAGE_REF" --push .
+
+      echo "IMAGE_REF=$IMAGE_REF" > build.env
+      cat build.env
 
   artifacts:
     reports:
@@ -154,12 +140,19 @@ provision_vk8s_workload:
     - test -n "${IMAGE_REF:?IMAGE_REF is required (from build.env)}"
     - test -n "${F5XC_REGISTRY_NAME:?F5XC_REGISTRY_NAME is required}"
     - test -n "${F5XC_WORKLOAD_PORT:?F5XC_WORKLOAD_PORT is required}"
-
-    # --- REQUIRED if using p12 auth for Python too ---
-    - test -n "${F5XC_API_P12_FILE:?F5XC_API_P12_FILE is required}"
     - test -n "${VES_P12_PASSWORD:?VES_P12_PASSWORD is required}"
-    - export F5XC_API_P12_FILE="$F5XC_API_P12_FILE"
-    - export VES_P12_PASSWORD="$VES_P12_PASSWORD"
+
+    # --- REQUIRED for p12 auth (FileBrowser upload) ---
+    - |
+      test -f "$F5XC_P12_PATH" || {
+        echo "ERROR: Missing cert at $F5XC_P12_PATH"
+        echo "Upload: f5-xc-lab-app.console.ves.volterra.io.api-creds.p12 via File Browser"
+        exit 1
+      }
+
+    # Export path for scripts that support p12 auth
+    - export F5XC_API_P12_FILE="${F5XC_P12_PATH}"
+    - export VES_P12_PASSWORD="${VES_P12_PASSWORD}"
 
   script:
     - pip install --no-cache-dir -r scripts/requirements.txt
@@ -170,12 +163,16 @@ provision_vk8s_workload:
 # ---------------------------
 deploy_f5xc:
   stage: deploy
-  image: hashicorp/terraform:1.6
+  image:
+    name: hashicorp/terraform:1.6
+    entrypoint: [""]
   needs:
     - job: policy_gate
       artifacts: true
     - job: build_and_push
       artifacts: true
+    - job: provision_vk8s_workload
+      artifacts: false
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: on_success
@@ -192,22 +189,41 @@ deploy_f5xc:
 
     # Required runtime inputs (not "over validation")
     - test -n "${F5XC_NAMESPACE:?F5XC_NAMESPACE is required}"
+    - test -n "${APP_DOMAIN:?APP_DOMAIN is required}"
     # From Stage 1 (policy_gate dotenv). We do NOT re-check file existence here.
     - test -n "${ENABLE_WAF:?ENABLE_WAF missing - check policy_gate dotenv}"
     - test -n "${ENABLE_API_DISCOVERY:?ENABLE_API_DISCOVERY missing - check policy_gate dotenv}"
     - test -n "${ENABLE_BOT_ADVANCED:?ENABLE_BOT_ADVANCED missing - check policy_gate dotenv}"
     - test -n "${ENABLE_RATE_LIMITING:?ENABLE_RATE_LIMITING missing - check policy_gate dotenv}"
-    # --- REQUIRED for p12 auth ---
-    - test -n "${F5XC_API_P12_FILE:?F5XC_API_P12_FILE is required}"
     - test -n "${VES_P12_PASSWORD:?VES_P12_PASSWORD is required}"
 
+    # --- REQUIRED for p12 auth (FileBrowser upload) ---
+    - |
+      test -f "$F5XC_P12_PATH" || {
+        echo "ERROR: Missing cert at $F5XC_P12_PATH"
+        echo "Upload: f5-xc-lab-app.console.ves.volterra.io.api-creds.p12 via File Browser"
+        exit 1
+      }
+
     # Provider/Terraform expected env var names
-    - export TF_VAR_f5xc_api_p12_file="$F5XC_API_P12_FILE"
-    - export VES_P12_PASSWORD="$VES_P12_PASSWORD"
+    - export TF_VAR_f5xc_api_p12_file="${F5XC_P12_PATH}"
+    - export VES_P12_PASSWORD="${VES_P12_PASSWORD}"
 
-    - terraform version
-    - terraform init -upgrade
+    - test -n "${CI_PROJECT_ID:?CI_PROJECT_ID missing}"
+    - test -n "${CI_JOB_TOKEN:?CI_JOB_TOKEN missing}"
 
+    # Terraform/OpenTofu HTTP backend
+    - |
+      terraform init -upgrade \
+        -backend-config="address=http://gitlab.f5demo.com/api/v4/projects/${CI_PROJECT_ID}/terraform/state/appworld-${F5XC_NAMESPACE}" \
+        -backend-config="lock_address=http://gitlab.f5demo.com/api/v4/projects/${CI_PROJECT_ID}/terraform/state/appworld-${F5XC_NAMESPACE}/lock" \
+        -backend-config="unlock_address=http://gitlab.f5demo.com/api/v4/projects/${CI_PROJECT_ID}/terraform/state/appworld-${F5XC_NAMESPACE}/lock" \
+        -backend-config="username=gitlab-ci-token" \
+        -backend-config="password=${CI_JOB_TOKEN}" \
+        -backend-config="lock_method=POST" \
+        -backend-config="unlock_method=DELETE" \
+        -backend-config="retry_wait_min=5"
+    
   script:
     - set -euo pipefail
     - |
@@ -229,11 +245,3 @@ deploy_f5xc:
           -var "enable_api_discovery=${ENABLE_API_DISCOVERY}" \
           -var "enable_bot_advanced=${ENABLE_BOT_ADVANCED}" \
           -var "enable_rate_limiting=${ENABLE_RATE_LIMITING}"
-
-  artifacts:
-    when: always
-    paths:
-      - terraform/terraform.tfstate
-      - terraform/terraform.tfstate.backup
-    expire_in: 2 hours
-

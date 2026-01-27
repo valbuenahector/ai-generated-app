@@ -101,10 +101,10 @@ resource "volterra_http_loadbalancer" "f5aiapp-lb" {
       validation_disabled = false
 
       api_definition {
-        name      = "openapi"
         # This namespace is for testing the API definitio will be a shared resource
-        namespace = var.f5xc_namespace
-        # namespace = "shared"
+        # namespace = var.f5xc_namespace
+        name      = "openapi"
+        namespace = "shared"
       }
     }
   }
