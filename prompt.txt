@@ -412,3 +412,13 @@ existing certificate called "lab-app-wildcard"
 2.- Enable enable_api_discovery and reference the API Definition created in terraform/3-api-definition.tf
 3.- To help you wit the schema please file terraform/volterra_http_loadbalancer.json
 4.- link to terraform resource documentation is https://registry.terraform.io/providers/volterraedge/volterra/latest/docs/resources/volterra_http_loadbalancer
+
+========
+
+attached is the latest clinerules  for Modules 2 and 3 adn the and prompt for module 3 tast 2. 
+
+I want you to optimize the prompt with the following criteria:
+
+1.- Instructions should not overlab with clinerules but it should highlighted 
+what is critical for CI/CD pipeline (openapi/openapi.json file)
+2.- Add the guideline to create the login and contact page based on the images attached
