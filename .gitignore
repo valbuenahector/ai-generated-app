@@ -2,8 +2,6 @@
 # This repo is CI-driven. Terraform state and secrets
 # are managed by GitLab and must never be committed.
 
-ai-generated-app/
-.env
 
 # -------------------------
 # Python

@@ -422,3 +422,4 @@ I want you to optimize the prompt with the following criteria:
 1.- Instructions should not overlab with clinerules but it should highlighted 
 what is critical for CI/CD pipeline (openapi/openapi.json file)
 2.- Add the guideline to create the login and contact page based on the images attached
+
