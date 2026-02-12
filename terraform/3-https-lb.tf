@@ -56,6 +56,8 @@ resource "volterra_http_loadbalancer" "f5aiapp-lb" {
   dynamic "bot_defense" {
     for_each = var.enable_bot_advanced ? [1] : []
     content {
+      regional_endpoint = "US"
+
       policy {
         javascript_mode = "ASYNC_JS_NO_CACHING"
 
@@ -63,7 +65,14 @@ resource "volterra_http_loadbalancer" "f5aiapp-lb" {
           javascript_location = "AFTER_HEAD"
         }
 
+        # ---- login ----
         protected_app_endpoints {
+          metadata { name = "login-endpoint" }
+
+          domain {
+            exact_value = "${var.f5xc_namespace}-lb.${var.app_domain}"
+          }
+
           http_methods = ["METHOD_POST"]
 
           flow_label {
@@ -72,24 +81,43 @@ resource "volterra_http_loadbalancer" "f5aiapp-lb" {
             }
           }
 
-          metadata {
-            name = "login-endpoint"
+          mitigation {
+            block {
+              status = "The requested URL was rejected. Please consult with your administrator."
+            }
+          }
+
+          path { path = "/login" }
+        }
+
+        # ---- contact ----
+        protected_app_endpoints {
+          metadata { name = "contact-endpoint" }
+
+          domain {
+            exact_value = "${var.f5xc_namespace}-lb.${var.app_domain}"
+          }
+
+          http_methods = ["METHOD_POST"]
+
+          flow_label {
+            authentication {
+              login_mfa = true
+            }
           }
 
           mitigation {
             block {
-              status = "PaymentRequired"
+              status = "The requested URL was rejected. Please consult with your administrator."
             }
           }
 
-          path {
-            path = "/login"
-          }
+          path { path = "/contact" }
         }
       }
-      regional_endpoint = "US"
     }
   }
+
 
   # ---------------------------
   # Module 3 Task (API Discovery) — only when enabled
