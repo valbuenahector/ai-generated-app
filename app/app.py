@@ -82,6 +82,12 @@ def alive():
     """Simple alive endpoint returning alive.html content."""
     return render_template('alive.html')
 
+@app.route('/search')
+def search():
+    """Search page: Intentionally vulnerable to Reflected XSS."""
+    query = request.args.get('q', '')
+    return render_template('search.html', query=query)
+
 @app.route('/api/status')
 def api_status():
     """Module 3: API Status endpoint."""
@@ -161,6 +167,57 @@ def contact():
         return render_template('contact.html', success=True, first_name=first_name)
     
     return render_template('contact.html')
+
+@app.route('/reports')
+def reports():
+    """Security Reports page: PRE-SCAN vs POS-SCAN comparison."""
+    static_images_path = os.path.join(app.root_path, 'static', 'images')
+    files = os.listdir(static_images_path) if os.path.exists(static_images_path) else []
+    
+    def find_file(pattern, ext):
+        for f in files:
+            if pattern in f and f.lower().endswith(ext.lower()):
+                return f
+        return None
+
+    scan_data = {
+        "pre": {
+            "pdf": find_file("PRE-SCAN", ".pdf"),
+            "video": find_file("PRE-SCAN", ".mp4"),
+            "image": find_file("PRE-SCAN", ".png"),
+            "issues": [
+                {"vuln": "Cross-site Scripting (Reflected)", "name": "/search", "cvss": "9.1", "severity": "High"},
+                {"vuln": "Cross-site Scripting (Reflected)", "name": "/search", "cvss": "9.1", "severity": "High"},
+                {"vuln": "Missing Security Headers", "name": "Strict-Transport-Security", "cvss": "4.3", "severity": "Medium"},
+                {"vuln": "Insecure Transport Layer", "name": "DNS Server", "cvss": "4.0", "severity": "Medium"},
+                {"vuln": "Missing Security Headers", "name": "X-Frame-Options", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Missing Security Headers", "name": "X-Content-Type-Options", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Missing Security Headers", "name": "Content-Security-Policy", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Cookie without Secure Flag", "name": "session", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Missing Subresource Integrity", "name": "-", "cvss": "2.6", "severity": "Low"},
+                {"vuln": "Logging and Monitoring", "name": "-", "cvss": "0.0", "severity": "Info"},
+            ],
+            "callout": "High severity reflected XSS appears in PRE-SCAN."
+        },
+        "pos": {
+            "pdf": find_file("POS-SCAN", ".pdf"),
+            "video": find_file("POS-SCAN", ".mp4"),
+            "image": find_file("POS-SCAN", ".png"),
+            "issues": [
+                {"vuln": "Missing Security Headers", "name": "Strict-Transport-Security", "cvss": "4.3", "severity": "Medium"},
+                {"vuln": "Insecure Transport Layer", "name": "DNS Server", "cvss": "4.0", "severity": "Medium"},
+                {"vuln": "Missing Security Headers", "name": "X-Frame-Options", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Missing Security Headers", "name": "X-Content-Type-Options", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Missing Security Headers", "name": "Content-Security-Policy", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Cookie without Secure Flag", "name": "session", "cvss": "3.7", "severity": "Low"},
+                {"vuln": "Missing Subresource Integrity", "name": "-", "cvss": "2.6", "severity": "Low"},
+                {"vuln": "Logging and Monitoring", "name": "-", "cvss": "0.0", "severity": "Info"},
+            ],
+            "callout": "Reflected XSS no longer appears in POS-SCAN after WAAP/WAF is enabled."
+        }
+    }
+    
+    return render_template('reports.html', scan_data=scan_data)
 
 # Intentional security weakness: Verbose error handling for demo
 @app.errorhandler(404)

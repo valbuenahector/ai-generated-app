@@ -423,3 +423,139 @@ I want you to optimize the prompt with the following criteria:
 what is critical for CI/CD pipeline (openapi/openapi.json file)
 2.- Add the guideline to create the login and contact page based on the images attached
 
+
+
+==========
+review the file files fro the applicaiton and figure the easiest way to introduce a vulnerabilty
+from the list below. the idea is to scan the app using F5XX Web application Scan and find this vulnerabiltiy
+then later on a second scan it the vulnerabiltiy will be protectby by the F5XC WAF
+
+OWASP Top 10 Coverage
+
+Injection (SQLi, XSS)
+Broken authentication
+Security misconfiguration
+Sensitive data exposure
+Server misconfigurations
+Known CVEs
+
+
+=============
+
+
+I need a prompt to vibe code a "Security Report" page where the report result for PRE-SCAN WAF  
+and POS-SCAN WAFwill be posted. With the follwin criteria
+
+1. - the structure could be simialr to the app/templates/contact.hmtl page. We need a section for PRE and POS
+2. - there are files in teh statc/images folder that will provide the content. There files with the name PRE-SCAN
+     and POS-SCAN. There are PDF files wit the full scan report and there mp4 videos showing the actual scan form F5 WAS
+3.- the point to is to show case the diferents between PRE and POS scan to prove the main point of the lab 
+4.- there should a new link on the header called "Reports"     
+
+
+
+```text
+You are Cline (VS Code) working inside the AppWorld 2026 lab repo.
+
+GOAL
+Create a new “Security Report” page that showcases **PRE-SCAN (WAF OFF)** vs **POS-SCAN (WAF ON)** results from F5 Web App Scanning (WAS). This page is used in Module 4 to visually prove the lab point: “same app, different outcome once WAAP/WAF is enabled”.
+
+CRITICAL REQUIREMENTS
+1) Page structure should be similar to `app/templates/contact.html` (same layout style, same base template usage).
+   - Must have two clear sections: **PRE-SCAN** and **POS-SCAN**
+2) Content is already in `app/static/images/`:
+   - There are assets with names containing `PRE-SCAN` and `POS-SCAN`
+   - There are **PDF** scan reports (full report)
+   - There are **MP4** videos showing the scan execution in F5 WAS
+3) The page must clearly compare PRE vs POS to reinforce the lab message (before/after security control).
+4) Add a new top-nav link called **Reports** (header) that routes to this page.
+
+NEW REQUIREMENT: “Issues” VISUAL SECTION (based on the provided screenshots)
+- Add an “Issues” section under each scan card (PRE and POS) that visually matches the feel of the WAS “Issues” table in the screenshots.
+- Keep it simple and lab-friendly: a compact table or list with columns:
+  - Vulnerability
+  - Name (path or header name)
+  - CVSS 3.0 Score + severity badge (High/Medium/Low/Info)
+- Populate the Issues with the following **lab demo values** (hardcode in code or as a small Python data structure; no need to parse PDFs):
+
+  PRE-SCAN (WAF OFF) Issues must include:
+  - Cross-site Scripting (Reflected) | /search | 9.1 High  (include it twice if you want to mimic “found multiple times”)
+  - Missing Security Headers | Strict-Transport-Security | 4.3 Medium
+  - Insecure Transport Layer | DNS Server | 4.0 Medium
+  - Missing Security Headers | X-Frame-Options | 3.7 Low
+  - Missing Security Headers | X-Content-Type-Options | 3.7 Low
+  - Missing Security Headers | Content-Security-Policy | 3.7 Low
+  - Cookie without Secure Flag | session | 3.7 Low
+  - Missing Subresource Integrity | - | 2.6 Low
+  - Logging and Monitoring | - | 0.0 Info
+
+  POS-SCAN (WAF ON) Issues must include (note: XSS should be gone):
+  - Missing Security Headers | Strict-Transport-Security | 4.3 Medium
+  - Insecure Transport Layer | DNS Server | 4.0 Medium
+  - Missing Security Headers | X-Frame-Options | 3.7 Low
+  - Missing Security Headers | X-Content-Type-Options | 3.7 Low
+  - Missing Security Headers | Content-Security-Policy | 3.7 Low
+  - Cookie without Secure Flag | session | 3.7 Low
+  - Missing Subresource Integrity | - | 2.6 Low
+  - Logging and Monitoring | - | 0.0 Info
+
+- Add a short callout right above/below the tables:
+  - PRE: “High severity reflected XSS appears in PRE-SCAN.”
+  - POS: “Reflected XSS no longer appears in POS-SCAN after WAAP/WAF is enabled.”
+
+IMPLEMENTATION TASKS
+A) Backend route
+- Update `app.py` (or the existing Flask entrypoint) to add a new route:
+  - GET `/reports` -> renders `reports.html`
+
+B) Template
+- Create: `app/templates/reports.html`
+- Must `extends "base.html"` and match the styling patterns used by `contact.html`
+- Layout requirements:
+  - Page title/header: “Security Reports” + subtext: “PRE-SCAN (WAF off) vs POS-SCAN (WAF on)”
+  - Two side-by-side cards on desktop, stacked on mobile:
+    1) PRE-SCAN (WAF OFF)
+    2) POS-SCAN (WAF ON)
+  - Each card must include:
+    - Short “what this means” bullet list (2–4 bullets)
+    - A media area with:
+      - A video player (MP4) with controls
+      - A “Download/View Full PDF Report” button/link
+      - Optional: a small thumbnail image if present (from `static/images`)
+    - The new “Issues” table/list described above
+
+C) Static asset handling (IMPORTANT)
+- Do NOT hardcode exact filenames unless you confirm them.
+- Implement a safe pattern that works with whatever is in `app/static/images/`:
+  OPTION 1 (preferred for this lab): In the Flask route, scan the directory and pick:
+    - first PDF containing “PRE-SCAN”
+    - first PDF containing “POS-SCAN”
+    - first MP4 containing “PRE-SCAN”
+    - first MP4 containing “POS-SCAN”
+    - optional: first PNG/JPG containing “PRE-SCAN” and “POS-SCAN”
+  Then pass those filenames into the template.
+- If directory scanning is not already used anywhere, add minimal logic for it (standard library only).
+
+D) Header nav link
+- Update the shared header (likely `app/templates/base.html`) to include:
+  - “Reports” link next to Home/About/Docs/Contact
+  - It should highlight/indicate active state on `/reports` similarly to other links (if active state exists).
+
+UI/STYLE RULES
+- Keep the existing theme: dark background, red accents, Tailwind utility classes (same vibe as current pages).
+- Responsive: 2-column on large screens, 1-column on mobile.
+- Accessible: proper headings, aria labels for video, buttons are keyboard-friendly.
+
+OUTPUT EXPECTATION
+- Implement the route, template, and nav update fully.
+- Do not change unrelated pages.
+- After code changes, run the app tests (or at least start the Flask app) and ensure `/reports` renders without errors.
+
+FILES YOU WILL LIKELY TOUCH
+- `app.py`
+- `app/templates/base.html`
+- `app/templates/reports.html` (new)
+
+START NOW.
+```
+

@@ -44,12 +44,26 @@
                         <img src="{{ url_for('static', filename='images/f5-logo-rgb.svg') }}" alt="F5 Logo" class="h-10">
                         <span class="text-xl font-bold tracking-tight">AppWorld 2026</span>
                     </div>
-                    <nav class="hidden md:flex space-x-8">
-                        <a href="{{ url_for('home') }}" class="hover:text-f5red transition-colors duration-200">Home</a>
-                        <a href="{{ url_for('about') }}" class="hover:text-f5red transition-colors duration-200">About</a>
-                        <a href="{{ url_for('docs') }}" class="hover:text-f5red transition-colors duration-200">Docs</a>
-                        <a href="{{ url_for('contact') }}" class="hover:text-f5red transition-colors duration-200">Contact</a>
+                    <nav class="hidden lg:flex space-x-8">
+                        <a href="{{ url_for('home') }}" class="hover:text-f5red transition-colors duration-200 {% if request.path == url_for('home') %}text-f5red{% endif %}">Home</a>
+                        <a href="{{ url_for('about') }}" class="hover:text-f5red transition-colors duration-200 {% if request.path == url_for('about') %}text-f5red{% endif %}">About</a>
+                        <a href="{{ url_for('docs') }}" class="hover:text-f5red transition-colors duration-200 {% if request.path == url_for('docs') %}text-f5red{% endif %}">Docs</a>
+                        <a href="{{ url_for('reports') }}" class="hover:text-f5red transition-colors duration-200 {% if request.path == url_for('reports') %}text-f5red{% endif %}">Reports</a>
+                        <a href="{{ url_for('contact') }}" class="hover:text-f5red transition-colors duration-200 {% if request.path == url_for('contact') %}text-f5red{% endif %}">Contact</a>
                     </nav>
+
+                    <!-- SEARCH FORM (Vulnerable to XSS) -->
+                    <div class="hidden md:block">
+                        <form action="{{ url_for('search') }}" method="GET" class="relative group">
+                            <input type="text" name="q" placeholder="Search vibes..." 
+                                class="bg-f5gray-800 text-white text-sm rounded-full py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-f5red w-48 transition-all group-hover:w-64 border border-transparent focus:border-f5red">
+                            <button type="submit" class="absolute right-3 top-2 text-f5gray-400 hover:text-white transition-colors">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
                 <div class="flex items-center space-x-4">
                     {% if session.get('user') %}
                         <span class="text-sm font-medium text-f5gray-400">Welcome, <span class="text-white">{{ session['user'] }}</span></span>

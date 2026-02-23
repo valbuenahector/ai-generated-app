@@ -81,6 +81,28 @@
           }
         }
       }
+    },
+    "/search": {
+      "get": {
+        "summary": "Search vibes",
+        "description": "Searches the vibe coding database. Note: Intentionally vulnerable to Reflected XSS for lab demonstration.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The search query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML response with search results"
+          }
+        }
+      }
     }
   }
 }
